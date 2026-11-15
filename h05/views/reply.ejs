@@ -1,0 +1,19 @@
+<div class="page-head">
+    <a href="/posts/<%= post.id %>" class="back" aria-label="Back">←</a>
+    <h1 class="page-title">Reply</h1>
+</div>
+
+<div class="quote">
+    <span class="avatar" style="background: <%= avatarColor(post.posterName) %>;"><%= initial(post.posterName) %></span>
+    <div class="tweet-main">
+        <div class="tweet-head">
+            <span class="name"><%= post.posterName %></span>
+            <span>·</span>
+            <time datetime="<%= isoDate(post.createdAt) %>" title="<%= fullDate(post.createdAt) %>"><%= timeAgo(post.createdAt) %></time>
+        </div>
+        <div class="content"><%= post.content %></div>
+        <div class="replying" style="margin-top: 10px;">Replying to <span class="accent"><%= post.posterName %></span></div>
+    </div>
+</div>
+
+<%- include('partials/post-form', { action: '/posts', replyToId: post.id, contentLabel: 'Your reply', placeholder: 'Post your reply', submitLabel: 'Reply', cancelHref: '/posts/' + post.id }) %>

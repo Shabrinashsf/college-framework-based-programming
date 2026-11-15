@@ -1,0 +1,52 @@
+<div class="page-head">
+    <h1 class="page-title">All Posts</h1>
+</div>
+
+<% if (posts.length === 0) { %>
+<div class="empty">
+    <h2>No posts yet</h2>
+    <p>When someone writes a post, it will show up here.</p>
+    <a href="/posts/new" class="btn">Write the first post</a>
+</div>
+<% } %>
+
+<% posts.forEach((post) => { %>
+<article class="tweet">
+    <span class="avatar" style="background: <%= avatarColor(post.posterName) %>;"><%= initial(post.posterName) %></span>
+    <div class="tweet-main">
+        <div class="tweet-head">
+            <span class="name"><%= post.posterName %></span>
+            <span>·</span>
+            <a href="/posts/<%= post.id %>" class="time"><time datetime="<%= isoDate(post.createdAt) %>" title="<%= fullDate(post.createdAt) %>"><%= timeAgo(post.createdAt) %></time></a>
+        </div>
+
+        <a href="/posts/<%= post.id %>" class="content"><%= post.content %></a>
+
+        <% if (post.replies.length > 0) { %>
+        <div class="thread" style="border-left: 3px solid #e9ecef; padding-left: 15px;">
+            <h4 class="thread-label">Replies (<%= post.replies.length %>)</h4>
+            <% post.replies.forEach((reply) => { %>
+            <div class="mini">
+                <div class="tweet-head">
+                    <span class="avatar avatar-sm" style="background: <%= avatarColor(reply.posterName) %>;"><%= initial(reply.posterName) %></span>
+                    <span class="name"><%= reply.posterName %></span>
+                    <span>·</span>
+                    <time datetime="<%= isoDate(reply.createdAt) %>" title="<%= fullDate(reply.createdAt) %>"><%= timeAgo(reply.createdAt) %></time>
+                </div>
+                <a href="/posts/<%= reply.id %>" class="content"><%= reply.content %></a>
+            </div>
+            <% }) %>
+        </div>
+        <% } %>
+
+        <div class="actions">
+            <a href="/posts/<%= post.id %>" class="act">View</a>
+            <a href="/posts/<%= post.id %>/reply" class="act act-reply">Reply</a>
+            <a href="/posts/<%= post.id %>/edit" class="act">Edit</a>
+            <form method="POST" action="/posts/<%= post.id %>/delete" onsubmit="return confirm('Delete this post?')">
+                <button type="submit" class="act act-delete">Delete</button>
+            </form>
+        </div>
+    </div>
+</article>
+<% }) %>

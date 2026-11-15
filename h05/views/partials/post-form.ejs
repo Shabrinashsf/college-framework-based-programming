@@ -1,0 +1,23 @@
+<%# Form post untuk new, edit, reply.
+    Parameter: action, submitLabel, cancelHref
+    Opsional: replyToId, name, content, contentLabel, placeholder %>
+<form method="POST" action="<%= action %>" class="form">
+    <% if (locals.replyToId) { %>
+    <input type="hidden" name="replyToId" value="<%= replyToId %>">
+    <% } %>
+
+    <div class="field">
+        <label for="posterName">Name</label>
+        <input type="text" id="posterName" name="posterName" value="<%= locals.name || '' %>" maxlength="100" required<%= locals.name ? '' : ' autofocus' %>>
+    </div>
+
+    <div class="field">
+        <label for="content"><%= locals.contentLabel || 'Content' %></label>
+        <textarea id="content" name="content" maxlength="25000" placeholder="<%= locals.placeholder || '' %>" required><%= locals.content || '' %></textarea>
+    </div>
+
+    <div class="form-actions">
+        <a href="<%= cancelHref %>" class="btn btn-outline">Cancel</a>
+        <button type="submit" class="btn"><%= submitLabel %></button>
+    </div>
+</form>

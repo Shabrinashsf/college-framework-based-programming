@@ -1,0 +1,65 @@
+<% const edited = new Date(post.updatedAt).getTime() - new Date(post.createdAt).getTime() > 1000; %>
+<div class="page-head">
+    <a href="<%= post.replyTo ? '/posts/' + post.replyTo.id : '/posts' %>" class="back" aria-label="Back">←</a>
+    <h1 class="page-title">Post</h1>
+</div>
+
+<article class="focus">
+    <div class="focus-head">
+        <span class="avatar avatar-lg" style="background: <%= avatarColor(post.posterName) %>;"><%= initial(post.posterName) %></span>
+        <div style="min-width: 0;">
+            <span class="name"><%= post.posterName %></span>
+            <% if (post.replyTo) { %>
+            <div class="replying">Replying to <a href="/posts/<%= post.replyTo.id %>"><%= post.replyTo.posterName %></a></div>
+            <% } %>
+        </div>
+    </div>
+
+    <div class="focus-text"><%= post.content %></div>
+
+    <div class="focus-meta">
+        <time datetime="<%= isoDate(post.createdAt) %>"><%= fullDate(post.createdAt) %></time><% if (edited) { %> · <span title="<%= fullDate(post.updatedAt) %>">Edited</span><% } %>
+    </div>
+
+    <div class="focus-stats">
+        <strong><%= post.replies.length %></strong> <%= post.replies.length === 1 ? 'Reply' : 'Replies' %>
+    </div>
+
+    <div class="actions">
+        <a href="/posts/<%= post.id %>/reply" class="act act-reply">Reply</a>
+        <a href="/posts/<%= post.id %>/edit" class="act">Edit</a>
+        <form method="POST" action="/posts/<%= post.id %>/delete" onsubmit="return confirm('Delete this post?')">
+            <button type="submit" class="act act-delete">Delete</button>
+        </form>
+    </div>
+</article>
+
+<% if (post.replies.length > 0) { %>
+<div class="section-label">Replies (<%= post.replies.length %>)</div>
+<% post.replies.forEach((reply) => { %>
+<article class="tweet" style="border-left: 4px solid #28a745; background-color: #f8f9fa;">
+    <span class="avatar" style="background: <%= avatarColor(reply.posterName) %>;"><%= initial(reply.posterName) %></span>
+    <div class="tweet-main">
+        <div class="tweet-head">
+            <span class="name" style="color: #28a745;"><%= reply.posterName %></span>
+            <span>·</span>
+            <a href="/posts/<%= reply.id %>" class="time"><time datetime="<%= isoDate(reply.createdAt) %>" title="<%= fullDate(reply.createdAt) %>"><%= timeAgo(reply.createdAt) %></time></a>
+        </div>
+        <div class="replying">Replying to <span class="accent"><%= post.posterName %></span></div>
+        <div class="content"><%= reply.content %></div>
+        <div class="actions">
+            <a href="/posts/<%= reply.id %>" class="act">View</a>
+            <a href="/posts/<%= reply.id %>/reply" class="act act-reply">Reply</a>
+            <% if (reply.replies.length > 0) { %>
+            <a href="/posts/<%= reply.id %>" class="nested"><%= reply.replies.length %> more repl<%= reply.replies.length === 1 ? 'y' : 'ies' %></a>
+            <% } %>
+        </div>
+    </div>
+</article>
+<% }) %>
+<% } else { %>
+<div class="empty">
+    <p>No replies yet.</p>
+    <a href="/posts/<%= post.id %>/reply" class="btn">Write the first reply</a>
+</div>
+<% } %>
